@@ -1,0 +1,3 @@
+Title: YAMA (Yet Another Moderator Add-on)
+Author: Dominoes, code snippets from Moderator v2 by Tezuni, DarkLight and Munk
+Extended Moderator addon; includes command module loading.
