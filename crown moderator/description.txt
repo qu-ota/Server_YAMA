@@ -1,0 +1,3 @@
+Moderator
+Crown (2143)
+Lets super admins set people to moderator.
