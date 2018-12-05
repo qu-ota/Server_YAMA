@@ -1,0 +1,3 @@
+Title: Staff Announcement
+Author: Tezuni
+Provides Support for Staff Announcements in Add-Ons

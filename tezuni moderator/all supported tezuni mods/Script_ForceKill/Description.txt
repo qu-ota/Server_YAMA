@@ -1,0 +1,4 @@
+Title: Force Kill
+Author: Tezuni
+ID: 8139
+Description: A Command that allows you to forcefully kill players.

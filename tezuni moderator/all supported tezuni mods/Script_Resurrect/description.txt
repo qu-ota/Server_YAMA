@@ -1,0 +1,3 @@
+Title: Resurrect Command
+Author: Shappeh & Tezuni
+Respawns dead players

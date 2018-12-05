@@ -1,0 +1,3 @@
+Title: Chat Groups
+Author: Dephurites & modified by Tezuni
+Admin & Moderator Chat where the Host can hear everything.

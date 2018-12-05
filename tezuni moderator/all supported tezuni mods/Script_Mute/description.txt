@@ -1,0 +1,3 @@
+Title: Mute
+Author: Visolator & Tezuni
+Mutes players in chat, team-chat, and PMs.
