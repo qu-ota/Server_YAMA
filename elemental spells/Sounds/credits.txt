@@ -1,0 +1,3 @@
+Most of these files contain metadata citing the author.
+Files with metadata were retrieved from Freesound.org.
+Files that do not have metadata were produced by Clickteam.
