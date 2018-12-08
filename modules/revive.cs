@@ -23,8 +23,8 @@ function serverCmdResurrect(%client, %target)
 		%target.addLives(1);
 		%target.setDead(0);
 		%target.spawnPlayer();
-		announce("\c3" SPC %target.name SPC "\c6was \c2resurrected \c6by\c3" SPC %client.name);
-		messageClient(%target,"","\c6You have been resurrected by \c3" @ %client.name @ "\c6.");
+		messageAllExcept(%target,'',"\c3" SPC %target.name SPC "\c6was \c2resurrected \c6by\c3" SPC %client.name);
+		messageClient(%target,'',"\c6You have been resurrected by \c3" @ %client.name @ "\c6.");
 		return;
 	}
 
