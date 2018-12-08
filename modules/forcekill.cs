@@ -25,7 +25,7 @@ function servercmdKill(%client,%Player)
 		return messageClient(%client,"","\c4"@ %player.name @" \c6is already dead.");
     
     %player.player.kill("suicide");
-	StaffAnnouncement("Staff Announcement:" SPC %player.name SPC "was \c0force-killed\c3 by" SPC %client.name);
+	messageAll('',"\c3" @ %player.name SPC "was \c0force-killed \c6by\c3" SPC %client.name @ "\c6.");
 }
 
 if($Pref::Swol_Slay_AdminLvl $= "")
