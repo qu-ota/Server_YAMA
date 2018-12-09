@@ -1,20 +1,23 @@
 //YAMA (Yet Another Moderator Addon)
 //By Dominoes (37977)
 //A better moderator addon, including moderator-supported module loading
+//DONT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING
 
-echo("YAMA | Loading main functions"); //Ahead Client Tools by Ahead, edited to load everything from YAMA instead of "Client_Ahead"
+$YAMA::Verison = "1.0";
+
+echo("=== YAMA | Loading core module ==="); //Ahead Client Tools by Ahead, edited to load everything from YAMA instead of "Client_Ahead"
 function loadMainYAMAModules()
 {
 	if(isFile("Add-Ons/Server_YAMA/core.cs"))
 	{
-		echo("YAMA | Core found, loading and continuing");
+		echo("=== YAMA | Core found, loading and continuing ===");
 		exec("Add-Ons/Server_YAMA/core.cs");
 		$YAMA::coresLoaded = 1;
 	}
 	else
 	{
 		$YAMA::coresLoaded = 0;
-		return error("YAMA | Core file not found, not executing");
+		return error("=== YAMA | Core file not found, not executing ===");
 	}
 }
 
@@ -43,17 +46,17 @@ function loadYAMAModules() //function for finding & loading modules
 		%i = %i + 1.0;
 	}
 }
-echo("YAMA | Ensuring core files are present...");
+echo("=== YAMA | Ensuring core files are present... ===");
 loadMainYAMAModules();
-echo("YAMA | Ensuring everything's good so far...");
+echo("=== YAMA | Ensuring everything's good so far... ===");
 if($YAMA::coresLoaded)
 {
 	continue;
 }
 else
 {
-	return error("YAMA | Add-on not loaded, cancelling");
+	return error("=== YAMA | Add-on not loaded, cancelling ===");
 }
-echo("YAMA | Everything looks good and loaded properly, now looking for modules");
+echo("=== YAMA | Everything looks good and loaded properly, now looking for modules ===");
 loadYAMAModules();
-echo("YAMA | Good to go!");
+echo("=== YAMA v" @ $YAMA::Version SPC "has loaded successfully! ===");
