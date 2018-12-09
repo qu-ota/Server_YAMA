@@ -4,15 +4,12 @@
 
 $PrefManagerEnabled = if(isFile("Add-Ons/System_ReturnToBlockland/server.cs") || isFile("Add-Ons/System_BlocklandGlass/server.cs"))
 
-if($PrefManagerEnabled == 1)
+if($PrefManagerEnabled)
 {
-	if(!$RTB::RTBR_ServerControl_Hook)
-	{
-		RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::Moderator::SuperAdminOnly","bool","Server_YAMA",1,0,0);
-		RTB_registerPref("Max Ban Length","YAMA","$Pref::Server::Moderator::MaxBanLength","int 60 10080","Server_YAMA",1440,0,0);
-		RTB_registerPref("Announce Auto Moderator?","YAMA","$Pref::Server::Moderator::AnnounceAutoModerator","bool","Server_YAMA",1,0,0);
-		echo("=== YAMA | Preferences registered successfully. ===");
-	}
+	RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::Moderator::SuperAdminOnly","bool","Server_YAMA",1,0,0);
+	RTB_registerPref("Max Ban Length","YAMA","$Pref::Server::Moderator::MaxBanLength","int 60 10080","Server_YAMA",1440,0,0);
+	RTB_registerPref("Announce Auto Moderator?","YAMA","$Pref::Server::Moderator::AnnounceAutoModerator","bool","Server_YAMA",1,0,0);
+	echo("=== YAMA | Preferences registered successfully. ===");
 }
 else
 {
