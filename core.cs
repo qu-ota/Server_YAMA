@@ -1,10 +1,26 @@
 //Main Moderator module
-//Without this file being here, this addon won't load! Please, PLEASE don't touch this unless you're absolutely sure you know what you're doing.
+//Without this file being here, this addon won't load!
+//Please, PLEASE don't touch this unless you're absolutely sure you know what you're doing.
 
-$Pref::Server::Moderator::SuperAdminOnly = 1; 		 // Set to 0 to allow admins to set and remove moderators.
-$Pref::Server::Moderator::MaxBanLength = 1440;		 // Maximum amount of time in minutes a moderator may ban someone, -1 for no limit
-$Pref::Server::Moderator::AnnounceAutoModerator = 1; // Should "Player has become Moderator (Auto)" be displayed when they join?
-$Pref::Server::Moderator::CanViewBanList = 0;	  	 // Should moderators be allowed to view the ban list? Still may not unban if set to 1.
+$PrefManagerEnabled = if(isFile("Add-Ons/System_ReturnToBlockland/server.cs") || isFile("Add-Ons/System_BlocklandGlass/server.cs"))
+
+if($PrefManagerEnabled = 1)
+{
+	if(!$RTB::RTBR_ServerControl_Hook)
+	{
+		RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::Moderator::SuperAdminOnly","bool","Server_YAMA",1,0,0);
+		RTB_registerPref("Max Ban Length","YAMA","$Pref::Server::Moderator::MaxBanLength","int 60 10080","Server_YAMA",1440,0,0);
+		RTB_registerPref("Announce Auto Moderator?","YAMA","$Pref::Server::Moderator::AnnounceAutoModerator","bool","Server_YAMA",1,0,0);
+		echo("=== YAMA | Preferences registered successfully. ===");
+	}
+}
+else
+{
+	$Pref::Server::Moderator::SuperAdminOnly = 1; 		 // Set to 0 to allow admins to set and remove moderators.
+	$Pref::Server::Moderator::MaxBanLength = 1440;		 // Maximum amount of time in minutes a moderator may ban someone, -1 for no limit
+	$Pref::Server::Moderator::AnnounceAutoModerator = 1; // Should "Player has become Moderator (Auto)" be displayed when they join?
+	echo("=== YAMA | Blockland Glass / Return to Blockland not found, values for commands set ===");
+}
 
 function isInt(%string) {
    return (%string $= mFloatLength(%string, 0));
