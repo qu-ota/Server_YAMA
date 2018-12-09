@@ -1,6 +1,6 @@
 //YAMA (Yet Another Moderator Addon)
 //By Dominoes (37977)
-//A better moderator addon, including moderator-supported module loading and playerlist updating
+//A better moderator addon, including moderator-supported module loading
 
 echo("YAMA | Loading main functions"); //Ahead Client Tools by Ahead, edited to load everything from YAMA instead of "Client_Ahead"
 function loadMainYAMAModules()
