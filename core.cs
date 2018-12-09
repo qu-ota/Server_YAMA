@@ -4,7 +4,7 @@
 
 $PrefManagerEnabled = if(isFile("Add-Ons/System_ReturnToBlockland/server.cs") || isFile("Add-Ons/System_BlocklandGlass/server.cs"))
 
-if($PrefManagerEnabled = 1)
+if($PrefManagerEnabled == 1)
 {
 	if(!$RTB::RTBR_ServerControl_Hook)
 	{
