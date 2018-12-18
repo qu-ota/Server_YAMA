@@ -3,15 +3,14 @@
 //A better moderator addon, including moderator-supported module loading
 //DONT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING
 
-$YAMA::Verison = "1.0";
-
 echo("=== YAMA | Loading core module ==="); //Ahead Client Tools by Ahead, edited to load everything from YAMA instead of "Client_Ahead"
 function loadMainYAMAModules()
 {
-	if(isFile("Add-Ons/Server_YAMA/core.cs"))
+	if(isFile("Add-Ons/Server_YAMA/core.cs") && isFile("Add-Ons/Server_YAMA/lists.cs"))
 	{
-		echo("=== YAMA | Core found, loading and continuing ===");
+		echo("=== YAMA | Core files found, loading ===");
 		exec("Add-Ons/Server_YAMA/core.cs");
+		exec("Add-Ons/Server_YAMA/lists.cs");
 		$YAMA::coresLoaded = 1;
 	}
 	else
@@ -23,27 +22,12 @@ function loadMainYAMAModules()
 
 function loadYAMAModules() //function for finding & loading modules
 {
-	%dir = "Add-Ons/Server_YAMA/modules/*.cs";
-	%fileCount = getFileCount(%dir);
-	%filename = findFirstFile(%dir);
-	%dirCount = 0;
-	while(%filename !$= "")
+	%search = "Add-Ons/Server_YAMA/modules/*.cs";
+
+	for(%file = findFirstFile(%search); isFile(%file); %file = findNextFile(%search))
 	{
-		%path = filePath(%filename);
-		%dirName = getSubStr(%path, strlen("Add-Ons/Server_YAMA/modules/"), strlen(%path) - strlen("Add-Ons/Server_YAMA/modules/"));
-		%dirNameList[%dirCount] = %dirName;
-		%dirCount = %dirCount + 1.0;
-		%filename = findNextFile(%dir);
-	}
-	%i = 0;
-	while(%i < %dirCount)
-	{
-		%dirName = %dirNameList[%i];
-		echo("YAMA | Checking module: " @ %dirName);
-		%name = %dirName;
-		echo("YAMA | Loading module: " @ %dirName);
-		exec("Add-Ons/Server_YAMA/modules/" @ %dirName);
-		%i = %i + 1.0;
+		echo("=== YAMA | Loading module:" SPC %file);
+		exec(%file);
 	}
 }
 echo("=== YAMA | Ensuring core files are present... ===");
@@ -59,4 +43,4 @@ else
 }
 echo("=== YAMA | Everything looks good and loaded properly, now looking for modules ===");
 loadYAMAModules();
-echo("=== YAMA v" @ $YAMA::Version SPC "has loaded successfully! ===");
+echo("=== YAMA has loaded successfully! ===");

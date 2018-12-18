@@ -2,161 +2,127 @@
 //Without this file being here, this addon won't load!
 //Please, PLEASE don't touch this unless you're absolutely sure you know what you're doing.
 
-$PrefManagerEnabled = if(isFile("Add-Ons/System_ReturnToBlockland/server.cs") || isFile("Add-Ons/System_BlocklandGlass/server.cs"))
-
-if($PrefManagerEnabled)
+if(isFile("Add-Ons/System_ReturnToBlockland/server.cs") || isFile("Add-Ons/System_BlocklandGlass/server.cs"))
 {
-	RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::Moderator::SuperAdminOnly","bool","Server_YAMA",1,0,0);
-	RTB_registerPref("Max Ban Length","YAMA","$Pref::Server::Moderator::MaxBanLength","int 60 10080","Server_YAMA",1440,0,0);
-	RTB_registerPref("Announce Auto Moderator?","YAMA","$Pref::Server::Moderator::AnnounceAutoModerator","bool","Server_YAMA",1,0,0);
+	RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::YAMA::SuperAdminOnly","bool","Server_YAMA",1,0,0);
+	RTB_registerPref("Max Ban Length","YAMA","$Pref::Server::YAMA::MaxBanLength","int 60 10080","Server_YAMA",1440,0,0);
+	RTB_registerPref("Announce Auto Moderator?","YAMA","$Pref::Server::YAMA::AnnounceAutoModerator","bool","Server_YAMA",1,0,0);
+	RTB_registerPref("Show Mod Shields?","YAMA","$Pref::Server::YAMA::ShowModShields","bool","Server_YAMA",1,0,0);
 	echo("=== YAMA | Preferences registered successfully. ===");
 }
 else
 {
-	$Pref::Server::Moderator::SuperAdminOnly = 1; 		 // Set to 0 to allow admins to set and remove moderators.
-	$Pref::Server::Moderator::MaxBanLength = 1440;		 // Maximum amount of time in minutes a moderator may ban someone, -1 for no limit
-	$Pref::Server::Moderator::AnnounceAutoModerator = 1; // Should "Player has become Moderator (Auto)" be displayed when they join?
+	$Pref::Server::YAMA::SuperAdminOnly = 1; 		 // Set to 0 to allow admins to set and remove moderators.
+	$Pref::Server::YAMA::MaxBanLength = 1440;		 // Maximum amount of time in minutes a moderator may ban someone, -1 for no limit
+	$Pref::Server::YAMA::AnnounceAutoModerator = 1; // Should "Player has become Moderator (Auto)" be displayed when they join?
+	$Pref::Server::YAMA::ShowModShields = 1;
 	echo("=== YAMA | Blockland Glass / Return to Blockland not found, values for commands set ===");
 }
 
-function isInt(%string) {
-   return (%string $= mFloatLength(%string, 0));
+function Mod_addAutoStatus(%client, %player)
+{
+    $Pref::Server::AutoModList = addItemToList($Pref::Server::AutoModeratorList,%player.bl_id);
+    export("$Pref::Server::AutoModList","config/server/prefs.cs");
 }
 
-function removeModerator(%blid)
+function Mod_removeAutoStatus(%client, %player)
 {
-	if(hasItemOnList($Pref::Server::AutoModeratorList, %blid))
-	{
-		$Pref::Server::AutoModeratorList = removeItemFromList($Pref::Server::AutoModeratorList, %blid);
-		%victim = findClientByBL_ID(%blid);
-		if(isObject(%victim))
-		{
-			commandToAll('Glass_setPlayerlistStatus', %victim, "-", 1);
-			%victim.isModerator = 0;
-		}
-	}
-	export("$Pref::Server::AutoModeratorList","config/server/prefs.cs");
+	$Pref::Server::AutoModList = removeItemFromList($Pref::Server::AutoModeratorList,%player.bl_id);
+	export("$Pref::Server::*","config/server/prefs.cs");
 }
 
-function addModerator(%blid)
+function checkmod(%client)
 {
-	if(!hasItemOnList($Pref::Server::AutoModeratorList, %blid))
+    %list = $Pref::Server::AutoModList;
+    %bl_id = %client.bl_id;
+	if(hasItemOnList(%list,%bl_id))
 	{
-		$Pref::Server::AutoModeratorList = addItemToList($Pref::Server::AutoModeratorList, %blid);
-		%victim = findClientByBL_ID(%blid);
-		if(isObject(%victim))
-		{
-			commandToAll('Glass_setPlayerlistStatus', %victim, "M", 1);
-			%victim.isModerator = 1;
-		}
+		%client.isModerator = true;
+		%client.isAutoModerator = true;
+		commandToAll('Glass_setPlayerListStatus', %player.bl_id, "M", 1);
+		messageAll('MsgAdminForce', '\c4%1 has become Moderator (Auto)', %client.name);
 	}
-	export("$Pref::Server::AutoModeratorList","config/server/prefs.cs");
-}
+}  
 
-function gameConnection::autoAdminCheck(%this)
+function serverCmdMod(%client, %player, %type) 
 {
-	parent::autoAdminCheck(%this);
-	if(hasItemOnList($Pref::Server::AutoModeratorList, %this.getBLID()))
-	{
-		commandToAll('Glass_setPlayerlistStatus', %victim, "M", 1);
-		%this.isModerator = 1;
-		if($Pref::Server::Moderator::AnnounceAutoModerator)
-			schedule(200, 0, "announce", "\c2"  @ %this.getPlayerName() SPC "has become Moderator (Auto)");
-	}
-	
-	if(%this.isAdmin && %this.isModerator)
-	{
-		$Pref::Server::AutoModeratorList = removeItemFromList($Pref::Server::AutoModeratorList, %blid);
-		%this.isModerator = 0;
-		return;
-	}
-}
-
-function serverCmdtoggleModerator(%cl, %target)
-{
-	if(!%cl.isAdmin)
-	{
-		messageClient(%cl, '', "\c6You must be an admin to set moderators.");
-		return;
-	}
-	if($Pref::Server::Moderator::SuperAdminOnly == 1 && !%cl.isSuperAdmin)
-	{
-		messageClient(%cl, '', "\c6You must be a super admin to set moderators.");
-		return;
-	}
-	if(%target $= "")
-	{
-		messageClient(%cl, '', "\c6You must input a a target name or BL_ID.");
-		return;
-	}
-	%victim = findClientByName(%target);
-	if(!isObject(%victim))
-		%victim = findClientByBL_ID(%target);
-	
-	if(isObject(%victim))
-	{
-		if(%victim.isAdmin)
-		{
-			messageClient(%cl, '', "\c6This player is admin or higher.");
-			return;
-		}
-		%name = %victim.getPlayerName();
-		%blid = %victim.getBLID();
-	}
+	if(!%client.isSuperAdmin && $Pref::Server::YAMA::SuperAdminOnly == 1)
+		return messageClient(%client, '', "\c6Only \c3super admins \c6may add \c4moderators\c6.");
 	else
 	{
-		if(!isInt(%target) || %target < 0)
-		{
-			messageClient(%cl, '', "\c6Unable to find player, please input a BL_ID or correctly type their name.");
-			return;
-		}
-		%blid = %target;
+		if(!%client.isAdmin)
+			return messageClient(%client, '', "\c6Only \c3admins \c6may add \c4moderators\c6.");
 	}
 	
+    %player = findClientByName(%player);
+      
+	if(%player.isModerator || %player.isAdmin || %player.isSuperAdmin)                                  
+		return messageClient(%client,'',"\c6" @ %player.name SPC "is already a staff member. If they're a moderator, try /demod.");
 	
-	if(hasItemOnList($Pref::Server::AutoModeratorList, %blid))
+	if(%type $="auto" || %type $="a")
 	{
-		removeModerator(%blid);
-		announce("\c2" @ %cl.getPlayerName() SPC "revoked moderator from" SPC %name @ "(BL_ID: " @ %blid @ ")");
-		if(isObject(%victim))
-			%victim.isModerator = 0;
+		if(%player.isAutoModerator == false)
+			return messageClient(%client,'',"\c6" @ %player.name SPC "is already an auto moderator. Try /demod if this wasn't what you're looking for.");
+		messageAll('MsgAdminForce', '\c2%1 has become Moderator (Auto)', %player.name);
+		schedule(100, 0, Mod_addAutoStatus, %player);
+		%player.isAutoModerator = true;
 	}
 	else
-	{
-		addModerator(%blid);
-		announce("\c2" @ %cl.getPlayerName() SPC "granted moderator to" SPC %name @ "(BL_ID: " @ %blid @ ")");
-		if(isObject(%victim))
-			%victim.isModerator = 1;
-	}
+		messageAll('MsgAdminForce', '\c2%1 has become Moderator (Manual)', %player.name);
+	%player.isModerator = true;
+	if(isObject(%player))
+		commandToAll('Glass_setPlayerListStatus', %player.bl_id, "M", 1);
 }
 
-function serverCmdListModerators(%cl)
-{
-	messageClient(%cl, '', "\c3Online Moderators:");
-	for(%i=0; %i < clientGroup.getCount(); %i++)
+function serverCmdDeMod(%client, %player)
+{       
+	if(!%client.isSuperAdmin && $Pref::Server::YAMA::SuperAdminOnly == 1)
+		return messageClient(%client, '', "\c6Only \c3super admins \c6may remove \c4moderators\c6.");
+	else
 	{
-		%cls = clientGroup.getObject(%i);
-		if(%cls.isModerator)
+		if(!%client.isAdmin)
+			return messageClient(%client, '', "\c6Only \c3admins \c6may remove \c4moderators\c6.");
+	}
+	
+	%player = findClientByName(%player);
+	
+	if(!%player.isModerator)              
+		return messageClient(%client,'',"\c6" @ %player.name SPC "is not a \c4moderator\c6.");
+	
+	messageAll('MsgAdminForce', '\c2%1 has been demoted from moderator (Auto)', %player.name);
+	schedule(100, 0, Mod_RemoveAutoStatus, %player);
+	%player.isModerator = false;
+	if(%player.isAutoModerator)
+		%player.isAutoModerator = false;
+	if(isObject(%player))
+		commandToAll('Glass_setPlayerListStatus', %player.bl_id, "-", 1);
+}
+
+function serverCmdListModerators(%client)
+{
+	if(%client.isModerator || %client.isAdmin || %client.isSuperAdmin)
+		listModerators(%client);
+	
+	else
+		messageClient(%client,'',"\c6You must be part of server staff to use this command.");
+}
+
+function serverCmdListMods(%client)
+{
+	serverCmdListModerators(%client);
+}
+
+function listModerators(%client)
+{
+	messageClient(%client,'',"\c6Online Moderators:");
+	
+		for(%i=0; %i < ClientGroup.getCount(); %i++)  
 		{
-			%count++;
-			messageClient(%cl, '', "\c6" @ %cls.getPlayerName());
+			%target = ClientGroup.getObject(%i);
+               
+			if(%target.isModerator)
+			{
+				messageClient(%client,'',"\c2" @ %target.name);
+			}
 		}
-	}
-	if(%count $= "")
-		messageClient(%cl, '', "\c6None");
-}
-
-function serverCmdListMods(%cl)
-{
-	serverCmdListModerators(%cl);
-}
-
-function serverCmdSetMod(%cl, %target)
-{
-	serverCmdtoggleModerator(%cl, %target);
-}
-
-function serverCmdunMod(%cl, %target)
-{
-	serverCmdtoggleModerator(%cl, %target);
 }
