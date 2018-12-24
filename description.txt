@@ -1,3 +1,87 @@
-Title: YAMA (Yet Another Moderator Add-on)
+Title: YAMA (Yet Another Moderator Addon)
 Author: Dominoes, code snippets from Moderator v2 by Tezuni, DarkLight and Munk
-Extended Moderator addon; includes command module loading.
+Module loading! Playerlist updating! YAMA.
+
+==== Overview ====
+
+Introduction
+-
+Introducing YAMA! Yet Another Moderator Addon is a moderator add-on seen in the eyes of Dominoes, with introductions of lots of new features. This includes updating the playerlist with one's status. moderator orbing and fetch/finding, and even module loading.
+
+Module Loading
+-
+No more having to hassle with adding lines of code to load new modules or using separate add-ons with moderator-supported scripts. With YAMA, you can simply drag all your custom moderator-supported scripts into the included "modules" folder, and simply reload your server or re-execute the add-on with "exec("Add-Ons/Server_YAMA/server.cs");" without quotations. With that, your new modules will be loaded instantly and will be ready for use.
+
+Player List Labeling
+-
+Confused with who's a moderator? Worry no more, as Blockland Glass's 'Glass_setPlayerListStatus' function can update the playerlist with any letter one wants. Admins and other users can tell who's a moderator and who isn't.
+
+Admin Tools, now functioning with moderators
+-
+Moderators can now use the admin orb, alongside /warp, /fetch, and /find. Everyone gets notified when admins and moderators use either /fetch or /find, so people can determine who's cheating in games and who isn't.
+
+Auto-Or-Manual Moderator
+-
+Don't want someone to become a moderator when they rejoin? Don't fret, as one can make someone a manual moderator, and loses the status when they rejoin. Or, simply put "a" after the /mod command and you'll make them an automatic moderator.
+
+==== Base Commands ====
+
+/mod victim type
+Rank required: Super Admin/Admin, depends on pref set
+Makes someone a moderator. Change "type" to "a" or "auto" without quotes to make them an auto moderator.
+
+/demod victim
+Rank required: Super Admin/Admin, depends on pref set
+Removes moderator status of someone. Will always remove auto status.
+
+/listModerators (alias: /listMods)
+Rank required: Moderator+
+Lists all active moderators on the server.
+
+/yama help
+Rank required: None
+Shows the help menu. Follow the instructions to find what you need.
+
+==== Included Modules ====
+
+ban.cs
+Author: Originally Tezuni, edited to allow reason input
+Commands: /b victim time multi-word reason
+Ban someone. Supports reason input.
+
+forcekill.cs
+Authors: Tezuni and Swollow, combined into one script by Dominoes
+Commands: /kill victim, /slay victim, /slay (when looking at someone)
+Two commands to kill someone. Straightforward method and one that's more electrifying. Look at someone in near range and use /slay without any target name to slay the person you're looking at.
+
+kick.cs
+Author: Tezuni, edited for reason input
+Commands: /k victim multi-word reason
+Kick someone. Supports reason input.
+
+mute.cs
+Author: Trinko, slightly edited to add moderator support
+Commands: /mute victim time, /unmute victim
+Mute someone. Use -1 for mute time to permanently mute them. Resets mute time if victim rejoins server.
+
+revive.cs
+Authors: Shappeh and Tezuni
+Commands: /res victim
+Revive someone. Works with Slayer.
+
+warn.cs
+Authors: Tezuni and DAProgs
+Commands: /warn victim multi-word reason (alias: /w)
+Warns someone, and gives them a popup on their screen to notify them.
+
+==== How to make your own modules ====
+
+So you want to make your own modules and have them loaded with this add-on. That's cool!
+However, you'll need a few things in your script before you think about letting it load:
+== Moderator Checks ==
+Make sure the add-on actually has support for moderators. That means adding checks such as "if(%client.isModerator)" in your script. Without this it sorta becomes useless and unneeded.
+== Help Function ==
+Ensure you have a function stated in your script that shows information about it. YAMA will say that there's no information found if your script doesn't explicitly state anything about it. Look in other modules to see how it works.
+== Make sure it works ==
+Nothing's worse than a broken script. Ensure that it works before letting others use it. Not much else to say.
+Once you've done/added the prerequestites, drag your script into the modules folder in the add-on. You'll be all set!

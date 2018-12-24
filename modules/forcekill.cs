@@ -25,7 +25,7 @@ function servercmdKill(%client,%Player)
 		return messageClient(%client,"","\c4"@ %player.name @" \c6is already dead.");
     
     %player.player.kill("suicide");
-	messageAll('',"\c3" @ %player.name SPC "was \c0force-killed \c6by\c3" SPC %client.name @ "\c6.");
+	messageAll('',"\c3" @ %player.name SPC "\c6was \c0force-killed \c6by\c3" SPC %client.name @ "\c6.");
 }
 
 if($Pref::Swol_Slay_AdminLvl $= "")
@@ -168,3 +168,8 @@ datablock ProjectileData(Swol_SlayProjectile)
 	explodeOnDeath = true;
 	explosion = swol_SlayExplosion;
 };
+
+$YAMA::ForceKill::Name = "forcekill.cs (Forcekill & Slay Script)";
+$YAMA::ForceKill::Author = "Tezuni and Swollow";
+$YAMA::ForceKill::Commands = "/kill victim, /slay victim, /slay (when looking at someone)";
+$YAMA::ForceKill::Information = "Two commands to kill someone. Straightforward method and one that's more electrifying. Look at someone in near range and use /slay without any target name to slay the person you're looking at.";

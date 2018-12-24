@@ -1,12 +1,16 @@
-//Mute command
-//Super special file from Trinko
-//Commands are in description.txt
+if(isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
+{
+	RTB_registerPref("Allow Permanent Mutes?","YAMA | Trinko Mute","$Pref::Server::Mute::PermaMutes","bool","Server_YAMA",1,0,0);
+	RTB_registerPref("Mute Restarts on Disconnect?","YAMA | Trinko Mute","$Pref::Server::Mute::MuteRestartonDC","bool","Server_YAMA",1,0,0);
+	echo("=== YAMA | Trinko Mute | Preferences registered successfully. ===");
+}
+else
+{
+	$Pref::Server::Mute::PermaMutes = 1; 		 // Set to 0 to allow admins to set and remove moderators.
+	$Pref::Server::Mute::MuteRestartonDC = 1;		 // Maximum amount of time in minutes a moderator may ban someone, -1 for no limit
+	echo("=== YAMA | Trinko Mute | Preferences manager not found, values for commands set ===");
+}
 
-if(!strLen($Pref::Server::Mute::PermaMutes) || $Pref::Server::Mute::PermaMutes)
-	$Pref::Server::Mute::PermaMutes = 0;
-
-if(!strLen($Pref::Server::Mute::MuteRestartonDC) || $Pref::Server::Mute::MuteRestartonDC)
-	$Pref::Server::Mute::MuteRestartonDC = 0;
 function getMuteTime(%t)
 {
 	//converts seconds to milliseconds, then converts it to other units of time
@@ -41,10 +45,9 @@ package Mute
 {
 	function serverCMDMute(%c, %v, %t)
 	{
-		if(!%c.isMod || !%c.isModerator)
-			return;
-		if(!%c.isAdmin)
-			return;
+		if(!%c.isModerator)
+			if(!%c.isAdmin)
+				return;
 		if(!%tar = findClientbyName(%v))
 			return;
 		if(%tar == %c)
@@ -74,6 +77,13 @@ package Mute
 			else if((%c.isAdmin && !%c.isSuperAdmin) && %tar.isAdmin)
 			{
 				messageClient(%c, '', "\c5You cannot mute other admins.");
+				return;
+			}
+			else if (%c.isModerator && (%tar.isModerator || %tar.isAdmin))
+			{
+				if(%c.isAdmin)
+					continue;
+				messageClient(%c, '', "\c5You cannot mute other staff members.");
 				return;
 			}
 			if((%c.isSuperAdmin || %c.isAdmin) && (%tar.getBLID() == getNumKeyID() || %tar.isCoHost))
@@ -124,7 +134,7 @@ package Mute
 		{
 			$Server::Muted[%this.getBLID()] = 0;
 			$Server::MutedTime[%this.getBLID()] = 0;
-			messageClient(%this, 'MsgAdminForce', "\c2You are now unmuted.");
+			messageClient(%this, '', "\c2You are now unmuted.");
 			return;
 		}
 		$Server::MuteSch[%this.getBLID()] = %this.scheduleNoQuota(1000, MuteSch, %t--);
@@ -132,10 +142,9 @@ package Mute
 
 	function serverCMDunmute(%c, %v)
 	{
-		if(!%c.isModerator || !%c.isMod)
-			return;
-		if(!%c.isAdmin)
-			return;
+		if(!%c.isModerator)
+			if(!%c.isAdmin)
+				return;
 		if(!isObject(%tar = findClientbyName(%v)))
 		{
 			messageClient(%c, '', "\c6This client does not exist.");
@@ -195,3 +204,8 @@ package Mute
 		return Parent::serverCmdStartTalking(%client);
 	}
 };activatepackage(mute);
+
+$YAMA::Mute::Name = "mute.cs (Trinko Mute)";
+$YAMA::Mute::Author = "Trinko";
+$YAMA::Mute::Commands = "/mute victim time, /unmute victim";
+$YAMA::Mute::Information = "Mute someone. Use -1 for mute time to permanently mute them. Resets mute time if victim rejoins server.";

@@ -3,14 +3,20 @@
 //A better moderator addon, including moderator-supported module loading
 //DONT TOUCH THIS UNLESS YOU KNOW WHAT YOU ARE DOING
 
+echo("=== YAMA | Checking version ===");
+$YAMA::General::Version = "1.0.0 Release";
+if(!$YAMA::General::Version = "1.0.0 Release")
+	return error("=== YAMA | Version check failed ===");
+
 echo("=== YAMA | Loading core module ==="); //Ahead Client Tools by Ahead, edited to load everything from YAMA instead of "Client_Ahead"
 function loadMainYAMAModules()
 {
-	if(isFile("Add-Ons/Server_YAMA/core.cs") && isFile("Add-Ons/Server_YAMA/lists.cs"))
+	if(isFile("Add-Ons/Server_YAMA/core.cs") && isFile("Add-Ons/Server_YAMA/lists.cs") && isFile("Add-Ons/Server_YAMA/commands.cs"))
 	{
 		echo("=== YAMA | Core files found, loading ===");
 		exec("Add-Ons/Server_YAMA/core.cs");
 		exec("Add-Ons/Server_YAMA/lists.cs");
+		exec("Add-Ons/Server_YAMA/commands.cs");
 		$YAMA::coresLoaded = 1;
 	}
 	else
@@ -43,4 +49,9 @@ else
 }
 echo("=== YAMA | Everything looks good and loaded properly, now looking for modules ===");
 loadYAMAModules();
-echo("=== YAMA has loaded successfully! ===");
+echo("=== YAMA version" SPC $YAMA::General::Version SPC "has loaded successfully! ===");
+
+datablock DecalData(ModShield)
+{
+	textureName = "Add-Ons/Server_YAMA/modules/moderatorBadge.png";
+};

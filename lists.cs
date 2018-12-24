@@ -1,4 +1,4 @@
-//Functions for adding and removing moderators from the dedicated list
+//Functions that allow for finding something on a list, alongside adding and removing items.
 //Made by Crown
 
 function hasItemOnList(%string,%item) {

@@ -45,3 +45,8 @@ function serverCmdR(%client, %target)
 {
 	serverCmdResurrect(%client, %target);
 }
+
+$YAMA::Revive::Name = "revive.cs (Revive Script)";
+$YAMA::Revive::Author = "Shappeh & Tezuni";
+$YAMA::Revive::Commands = "/res victim";
+$YAMA::Revive::Information = "Revive someone. Works with Slayer.";

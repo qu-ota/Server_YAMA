@@ -53,6 +53,11 @@ function servercmdwarn(%client,%target, %parm1, %parm2, %parm3, %parm4, %parm5, 
 		}
 
 		messageAll('',"Staff Announcement:" SPC %player.name SPC "was warned by" SPC %client.name SPC "for:\c2" SPC %reason);
-
+		%player.playSound2D(errorsound);
 		CommandToClient(%player, 'MessageBoxOK', "Warning (Issued by" @ %client.name @ ")", "You were warned by a staff member.\nReason: " @ %reason);
 }
+
+$YAMA::Warn::Name = "warn.cs (Warn Script)";
+$YAMA::Warn::Author = "Tezuni & DAProgs";
+$YAMA::Warn::Commands = "/warn victim multi-word reason (alias: /w)";
+$YAMA::Warn::Information = "Warns someone, and gives them a popup on their screen to notify them.";
