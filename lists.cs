@@ -1,8 +1,10 @@
 //Functions that allow for finding something on a list, alongside adding and removing items.
 //Made by Crown
 
-function hasItemOnList(%string,%item) {
-	for(%i=0;%i<getWordCount(%string);%i++) {
+function hasItemOnList(%string,%item)
+{
+	for(%i=0;%i<getWordCount(%string);%i++)
+	{
 		%word = getWord(%string,%i);
 		if(%word $= %item)
 			return true;
