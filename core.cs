@@ -15,18 +15,6 @@ else
 	echo("=== YAMA | Preferences manager not found, values for commands set ===");
 }
 
-function YAMA_addAutoStatus(%blid)
-{
-	$Pref::Server::AutoModeratorList = addItemToList($Pref::Server::AutoModeratorList,%blid);
-	export("$Pref::Server::*","config/server/prefs.cs");
-}
-
-function YAMA_removeAutoStatus(%blid)
-{
-	$Pref::Server::AutoModeratorList = removeItemFromList($Pref::Server::AutoModeratorList,%blid);
-	export("$Pref::Server::*","config/server/prefs.cs");
-}
-
 function GameConnection::autoAdminCheck(%this)
 {
 	schedule(100, 0, checkYAMAmods, %this);
@@ -41,6 +29,12 @@ function checkYAMAmods(%client)
 		%client.isAutoModerator = true;
 		messageAll('MsgAdminForce', '\c4%1 has become Moderator (Auto)', %client.name);
 		commandToAll('Glass_setPlayerListStatus', %client.bl_id, "M", 1);
+	}
+	if(%this.isAdmin && %this.isModerator)
+	{
+		$Pref::Server::AutoModeratorList = removeItemFromList($Pref::Server::AutoModeratorList, %blid);
+		%this.isModerator = 0;
+		return;
 	}
 }
 
@@ -66,7 +60,7 @@ function serverCmdMod(%client, %player, %type)
 		if((%player.isModerator && !%player.isAutoModerator) || !%player.isModerator)
 		{
 			messageAll('MsgAdminForce', '\c2%1 has become Moderator (Auto)', %player.name);
-			schedule(100,0,YAMA_addAutoStatus,%blid);
+			$Pref::Server::AutoModeratorList = addItemToList($Pref::Server::AutoModeratorList, %blid);
 			%player.isModerator = true;
 			%player.isAutoModerator = true;
 			commandToAll('Glass_setPlayerListStatus', %player.bl_id, "M", 1);
@@ -106,7 +100,7 @@ function serverCmdDeMod(%client, %player)
 	%blid = %player.getBLID();
 	
 	messageAll('MsgAdminForce', '\c2%1 has been demoted from moderator (Auto & Manual)', %player.name);
-	schedule(100,0,YAMA_removeAutoStatus,%blid);
+	$Pref::Server::AutoModeratorList = removeItemFromList($Pref::Server::AutoModeratorList, %blid);
 	%player.isModerator = false;
 	if(%player.isAutoModerator)
 		%player.isAutoModerator = false;
