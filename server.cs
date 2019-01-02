@@ -50,8 +50,3 @@ else
 echo("=== YAMA | Everything looks good and loaded properly, now looking for modules ===");
 loadYAMAModules();
 echo("=== YAMA version" SPC $YAMA::General::Version SPC "has loaded successfully! ===");
-
-datablock DecalData(ModShield)
-{
-	textureName = "Add-Ons/Server_YAMA/modules/moderatorBadge.png";
-};
