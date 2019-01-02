@@ -2,16 +2,6 @@
 //Without this file being here, this addon won't load!
 //Please, PLEASE don't touch this unless you're absolutely sure you know what you're doing.
 
-package YAMAClientEnterGame 
-{
-   function GameConnection::AutoAdminCheck(%this)
-   {
-		messageClient(%this, '', "\c6Greetings, \c3" @ %this.name @"\c6! <color:1589FF>This server is currently running Yet Another Moderator Add-On version \c6" @ $YAMA::General::Version @ "<color:1589FF>. \c7Say \c3/yama help \c7so you know how this works.");
-		return Parent::AutoAdminCheck(%this);
-   }
-};
-activatepackage(YAMAClientEnterGame);
-
 if(isFile("Add-Ons/System_ReturnToBlockland/server.cs"))
 {
 	RTB_registerPref("Super Admin Only","YAMA","$Pref::Server::YAMA::SuperAdminOnly","bool","Server_YAMA",1,0,0);
