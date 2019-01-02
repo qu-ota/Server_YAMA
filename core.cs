@@ -42,7 +42,7 @@ function checkYAMAmods(%client)
 		messageAll('MsgAdminForce', '\c4%1 has become Moderator (Auto)', %client.name);
 		commandToAll('Glass_setPlayerListStatus', %client.bl_id, "M", 1);
 	}
-}  
+}
 
 function serverCmdMod(%client, %player, %type) 
 {
@@ -54,9 +54,9 @@ function serverCmdMod(%client, %player, %type)
 			return messageClient(%client, '', "\c6Only \c2admins \c6may add \c2moderators\c6.");
 	}
 	
-    %player = findClientByName(%player);
-      
-	if(%player.isAdmin || %player.isSuperAdmin)                                  
+	%player = findClientByName(%player);
+	
+	if(%player.isAdmin || %player.isSuperAdmin)
 		return messageClient(%client,'',"\c6" @ %player.name SPC "is already a staff member. If they're a moderator, try /demod.");
 	
 	%blid = %player.getBLID();
@@ -100,7 +100,7 @@ function serverCmdDeMod(%client, %player)
 	
 	%player = findClientByName(%player);
 	
-	if(!%player.isModerator)              
+	if(!%player.isModerator)
 		return messageClient(%client,'',"\c6" @ %player.name SPC "is not a \c4moderator\c6.");
 	
 	%blid = %player.getBLID();
@@ -131,10 +131,10 @@ function listModerators(%client)
 {
 	messageClient(%client,'',"\c6Online Moderators:");
 	
-		for(%i=0; %i < ClientGroup.getCount(); %i++)  
+		for(%i=0; %i < ClientGroup.getCount(); %i++)
 		{
 			%playerget = ClientGroup.getObject(%i);
-               
+			
 			if(%playerget.isModerator)
 			{
 				messageClient(%client,'',"\c2" @ %playerget.name);
@@ -186,16 +186,22 @@ function serverCmdFetch(%cl, %target)
 {
 	if(%cl.isModerator)
 	{
+		%this = findClientByName(%target);
+		if(!isObject(%this))
+			return;
+		
 		%cl.isAdmin = 1;
 		parent::serverCmdFetch(%cl, %target);
 		%cl.isAdmin = 0;
-		%this = findClientByName(%target);
 		messageAll('MsgAdminForce',"\c3" @ %cl.name SPC "\c6has fetched \c3" @ %this.name @ "\c6.");
 	}
 	if(%cl.isAdmin)
 	{
-		parent::serverCmdFetch(%cl, %target);
 		%this = findClientByName(%target);
+		if(!isObject(%this))
+			return;
+		
+		parent::serverCmdFetch(%cl, %target);
 		messageAll('MsgAdminForce',"\c3" @ %cl.name SPC "\c6has fetched \c3" @ %this.name @ "\c6.");
 	}
 }
@@ -204,18 +210,40 @@ function serverCmdFind(%cl, %target)
 {
 	if(%cl.isModerator)
 	{
+		%this = findClientByName(%target);
+		if(!isObject(%this))
+			return;
+		
 		%cl.isAdmin = 1;
 		parent::serverCmdFind(%cl, %target);
 		%cl.isAdmin = 0;
-		%this = findClientByName(%target);
 		messageAll('MsgAdminForce',"\c3" @ %cl.name SPC "\c6went to \c3" @ %this.name @ "\c6.");
 	}
 	if(%cl.isAdmin)
 	{
-		parent::serverCmdFind(%cl, %target);
 		%this = findClientByName(%target);
+		if(!isObject(%this))
+			return;
+		
+		parent::serverCmdFind(%cl, %target);
 		messageAll('MsgAdminForce',"\c3" @ %cl.name SPC "\c6went to \c3" @ %this.name @ "\c6.");
 	}
+}
+
+function serverCmdSpy(%cl, %target)
+{
+	if(%cl.isModerator)
+	{
+		%this = findClientByName(%target);
+		if(!isObject(%this))
+			return;
+		
+		%cl.isAdmin = 1;
+		parent::serverCmdSpy(%cl, %target);
+		%cl.isAdmin = 0;
+	}
+	if(%cl.isAdmin)
+		parent::serverCmdSpy(%cl, %target);
 }
 };
 activatePackage(YAMA_modPerms);
