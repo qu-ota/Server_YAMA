@@ -187,7 +187,7 @@ function serverCmdFetch(%cl, %target)
 	if(%cl.isModerator)
 	{
 		%this = findClientByName(%target);
-		if(!isObject(%this))
+		if(!isObject(%this.player))
 			return;
 		
 		%cl.isAdmin = 1;
@@ -198,7 +198,7 @@ function serverCmdFetch(%cl, %target)
 	if(%cl.isAdmin)
 	{
 		%this = findClientByName(%target);
-		if(!isObject(%this))
+		if(!isObject(%this.player))
 			return;
 		
 		parent::serverCmdFetch(%cl, %target);
@@ -211,7 +211,7 @@ function serverCmdFind(%cl, %target)
 	if(%cl.isModerator)
 	{
 		%this = findClientByName(%target);
-		if(!isObject(%this))
+		if(!isObject(%this.player))
 			return;
 		
 		%cl.isAdmin = 1;
@@ -222,7 +222,7 @@ function serverCmdFind(%cl, %target)
 	if(%cl.isAdmin)
 	{
 		%this = findClientByName(%target);
-		if(!isObject(%this))
+		if(!isObject(%this.player))
 			return;
 		
 		parent::serverCmdFind(%cl, %target);
@@ -235,7 +235,7 @@ function serverCmdSpy(%cl, %target)
 	if(%cl.isModerator)
 	{
 		%this = findClientByName(%target);
-		if(!isObject(%this))
+		if(!isObject(%this.player))
 			return;
 		
 		%cl.isAdmin = 1;
